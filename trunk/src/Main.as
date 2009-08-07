@@ -1,5 +1,6 @@
 ﻿package {
 	import com.eflath.ripplestiltskin.BaseShape;
+	import com.eflath.ripplestiltskin.Hub;
 	import com.eflath.ripplestiltskin.ICircleInscribedShape;
 	import com.eflath.ripplestiltskin.Ngon;
 	import com.eflath.ripplestiltskin.NStar;
@@ -30,12 +31,14 @@
 			
 			var s:NStar = new NStar(9, 80, 0.4);
 			
+			/*
 			var r:ShapeRenderer = new ShapeRenderer();
 			r.shape = s;
 			addChild( r);
 			r.debugDrawShape();
 			//r.drawOutline(0xcccccc, 2, 1);
 			r.x = 100;	r.y = 100;
+			*/
 			
 			/*
 			// would be cool to use this technique for when distortion is applied
@@ -69,7 +72,7 @@
 				b.draw( outline.graphics, 2, 0xFF0000, false);
 			}
 			
-			*/
+			
 			var r2:ShapeRenderer = new ShapeRenderer();
 			r2.shape = s.cloneWithNewRadius(s.radius + 10) as BaseShape;
 			r2.x = r.x;			r2.y = r.y;
@@ -83,6 +86,11 @@
 				});
 			timer.start();
 			//*/
+			
+			var h:Hub = new Hub( new NStar(3, 30) );
+			h.x = 200;
+			h.y = 200;
+			addChild(h);
 			
 		}
 		
