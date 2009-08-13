@@ -51,13 +51,39 @@
 			return newShape;
 		}
 		
-		public static function smoothToBezierCollection(s:BaseShape, smoothCoef:Number = 0.5):Vector.<FastBezier> {
+		public static function smoothToBezierCollection(s:BaseShape, smoothCoef:Number = 0.5, close:Boolean = true):Vector.<FastBezier> {
 			var i:int = -1;
-			var l:int = s.points.length;
-			var pt0:Point;
-			var pt1:Point;
-			var pt2:Point;
-			var pt3:Point;
+			var l:int = close ? s.points.length : Math.max(1, s.points.length - 3);
+			
+			var bez:Vector.<FastBezier> = new Vector.<FastBezier>;
+			
+			if (!close) {
+				bez.push(interpolateBez(s.getPointAtIndex(0),
+										s.getPointAtIndex(0),
+										s.getPointAtIndex(1),
+										s.getPointAtIndex(2), smoothCoef));
+				i++;
+			}
+			
+			while (++i < l) {
+				bez.push(interpolateBez(s.getPointAtIndex(i),
+										s.getPointAtIndex(i + 1),
+										s.getPointAtIndex(i + 2),
+										s.getPointAtIndex(i + 3), smoothCoef));
+			}
+			
+			if (!close) {
+				bez.push(interpolateBez(s.getPointAtIndex(l-2),
+										s.getPointAtIndex(l-1),
+										s.getPointAtIndex(l),
+										s.getPointAtIndex(l), smoothCoef));
+				i++;
+			}
+			
+			return bez;
+		}
+		
+		private static function interpolateBez(pt0:Point, pt1:Point, pt2:Point, pt3:Point, smoothCoef:Number):FastBezier {
 			var pc1:Point;
 			var pc2:Point;
 			var pc3:Point;
@@ -70,40 +96,32 @@
 			var pm2:Point;
 			var ctrl1:Point;
 			var ctrl2:Point;
-			var bez:Vector.<FastBezier> = new Vector.<FastBezier>;
 			
-			while (++i < l) {
-				pt0 = s.getPointAtIndex(i);
-				pt1 = s.getPointAtIndex(i + 1);
-				pt2 = s.getPointAtIndex(i +2);
-				pt3 = s.getPointAtIndex(i + 3);
-				pc1 = midpoint(pt0, pt1);
-				pc2 = midpoint(pt1, pt2);
-				pc3 = midpoint(pt2, pt3);
-				len1 = distance(pt0, pt1);
-				len2 = distance(pt1, pt2);
-				len3 = distance(pt2, pt3);
-				k1 = len1 / (len1 + len2);
-				k2 = len2 / (len2 + len3);
-				pm1 = new Point( 
-						pc1.x + (pc2.x - pc1.x) * k1, 
-						pc1.y + (pc2.y - pc1.y) * k1
-					);
-				pm2 = new Point( 
-						pc2.x + (pc3.x - pc2.x) * k2, 
-						pc2.y + (pc3.y - pc2.y) * k2
-					);		
-				ctrl1 = new Point (
-						pm1.x + (pc2.x - pm1.x) * smoothCoef + pt1.x - pm1.x,
-						pm1.y + (pc2.y - pm1.y) * smoothCoef + pt1.y - pm1.y
-					);
-				ctrl2 = new Point (
-						pm2.x + (pc2.x - pm2.x) * smoothCoef + pt2.x - pm2.x,
-						pm2.y + (pc2.y - pm2.y) * smoothCoef + pt2.y - pm2.y
-					);
-				bez.push(getBezier(pt1, ctrl1, ctrl2, pt2));
-			}
-			return bez;
+			pc1 = midpoint(pt0, pt1);
+			pc2 = midpoint(pt1, pt2);
+			pc3 = midpoint(pt2, pt3);
+			len1 = distance(pt0, pt1);
+			len2 = distance(pt1, pt2);
+			len3 = distance(pt2, pt3);
+			k1 = len1 / (len1 + len2);
+			k2 = len2 / (len2 + len3);
+			pm1 = new Point( 
+					pc1.x + (pc2.x - pc1.x) * k1, 
+					pc1.y + (pc2.y - pc1.y) * k1
+				);
+			pm2 = new Point( 
+					pc2.x + (pc3.x - pc2.x) * k2, 
+					pc2.y + (pc3.y - pc2.y) * k2
+				);		
+			ctrl1 = new Point (
+					pm1.x + (pc2.x - pm1.x) * smoothCoef + pt1.x - pm1.x,
+					pm1.y + (pc2.y - pm1.y) * smoothCoef + pt1.y - pm1.y
+				);
+			ctrl2 = new Point (
+					pm2.x + (pc2.x - pm2.x) * smoothCoef + pt2.x - pm2.x,
+					pm2.y + (pc2.y - pm2.y) * smoothCoef + pt2.y - pm2.y
+				);
+			return getBezier(pt1, ctrl1, ctrl2, pt2);
 		}
 		
 		public static function getBezier(p0:Point, p1:Point, p2:Point, p3:Point):FastBezier {

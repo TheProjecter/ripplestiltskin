@@ -47,6 +47,8 @@
 		 * @return
 		 */
 		public function getPointAtIndex(i:int):Point {
+			if (i < 0)
+				i = _points.length + i;
 			if (i > (_points.length - 1))
 				i = i % _points.length;
 			return _points[i];

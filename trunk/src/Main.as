@@ -9,6 +9,7 @@
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
@@ -29,7 +30,6 @@
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
-			var s:NStar = new NStar(9, 80, 0.4);
 			
 			/*
 			var r:ShapeRenderer = new ShapeRenderer();
@@ -87,10 +87,23 @@
 			timer.start();
 			//*/
 			
-			var h:Hub = new Hub( new NStar(3, 30) );
-			h.x = 200;
-			h.y = 200;
-			addChild(h);
+			stage.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void {
+					var s:ICircleInscribedShape;
+					var r:Number = Math.random();
+					if (r < 0.5) {
+						s = new Ngon(2+int(r * 10), Math.random() * 20 + 20);
+					} else {
+						s = new NStar(int(r * 10), Math.random() * 20 + 20, 0.7);
+					}
+					var h:Hub = new Hub( s );
+					h.x = e.stageX;
+					h.y = e.stageY;
+					h.rotation = Math.random() * 180;
+					addChild(h);
+				
+				});
+			
+			
 			
 		}
 		
