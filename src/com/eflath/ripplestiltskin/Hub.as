@@ -59,7 +59,6 @@
 		/////////////////
 		
 		private function onMouseDown(e:MouseEvent):void {
-			trace("MOUSE DOWN");
 			_mouseDownPoint = new Point(mouseX, mouseY);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onInitialMouseMove);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -72,7 +71,7 @@
 				r.radius = Math.sqrt((mouseX) * (mouseX) + (mouseY * mouseY));
 				r.color = Math.random() * 255 * 255 * 255;
 				r.isActiveRing = true;
-				trace("create ring with radius " + r.radius);
+				r.animate = true;
 				r.draw();
 				_activeRing = r;
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, onInitialMouseMove);
@@ -83,7 +82,6 @@
 		private function activeRingMouseMove(e:MouseEvent):void {
 			if ((mouseX) * (mouseX) + (mouseY * mouseY) > (_baseShape.radius * _baseShape.radius)) {
 				_activeRing.radius = Math.sqrt((mouseX*mouseX) + (mouseY * mouseY));
-				_activeRing.draw();
 			}
 		}
 		
@@ -93,7 +91,6 @@
 			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			if (_activeRing) {
 				_activeRing.isActiveRing = false;
-				_activeRing.draw();
 				_activeRing = null;
 			}
 		}

@@ -19,6 +19,8 @@
 
 package com.eflath.ripplestiltskin.customsingularity
 {
+  import flash.display.CapsStyle;
+  import flash.display.JointStyle;
   import Singularity.Numeric.Consts;
   import Singularity.Geom.Cubic;
   import flash.display.Shape;
@@ -571,7 +573,7 @@ package com.eflath.ripplestiltskin.customsingularity
 
     private function __plot(g:Graphics, _thick:uint, _c:uint, alpha:Number, _isClosed:Boolean):void
     {
-      g.lineStyle(_thick, _c, alpha);
+      g.lineStyle(_thick, _c, alpha, true, "normal", CapsStyle.ROUND, JointStyle.ROUND);
         
       switch( __subdiv )
       {

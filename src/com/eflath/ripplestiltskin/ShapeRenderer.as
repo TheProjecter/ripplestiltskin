@@ -70,10 +70,10 @@
 			g.endFill();
 		}
 		
-		public function drawOutline(color:uint, thickness:uint, alpha:Number):void {
+		public function drawOutline(color:uint, thickness:uint, alpha:Number, close:Boolean=true):void {
 			var g:Graphics = graphics;
 			g.lineStyle(thickness, color, alpha, true);
-			drawPath();
+			drawPath(close);
 		}
 		
 		/**
@@ -83,8 +83,8 @@
 		 * @param	alpha
 		 * @param	smoothCoef
 		 */
-		public function drawSmoothOutline(color:uint, thickness:uint, alpha:Number, smoothCoef:Number=0.5):void {
-			var bez:Vector.<FastBezier> = Utils.smoothToBezierCollection(_shape);
+		public function drawSmoothOutline(color:uint, thickness:uint, alpha:Number, smoothCoef:Number=0.5, close:Boolean=true):void {
+			var bez:Vector.<FastBezier> = Utils.smoothToBezierCollection(_shape, smoothCoef, close);
 			bez[0].draw( graphics, thickness, color, alpha, false);
 			for (var i:int = 1; i < bez.length-1; i++) {
 				bez[i].draw( graphics, thickness, color, alpha, true);
@@ -93,18 +93,18 @@
 		}
 		
 		
-		public function drawRoughOutline(color:uint, thickness:uint, alpha:Number, smoothCoef:Number = 0.4, subdivisions:int=4):void {
+		public function drawRoughOutline(color:uint, thickness:uint, alpha:Number, smoothCoef:Number = 0.4, subdivisions:int=4, close:Boolean=true):void {
 			var smoothshape:BaseShape = Utils.smooth( _shape, smoothCoef, subdivisions);
 			var cacheShape:BaseShape = _shape;
 			_shape = smoothshape;
-			drawOutline(color, thickness, alpha);
+			drawOutline(color, thickness, alpha, close);
 			_shape = cacheShape;
 		}
 		
 		/**
 		 * just the moveTo / lineTo commands to draw a shape (no fills or linestyle)
 		 */
-		public function drawPath():void {
+		public function drawPath(close:Boolean=true):void {
 			var g:Graphics = graphics;
 			var pt:Point = _shape.points[0];
 			g.moveTo(pt.x, pt.y);
@@ -114,8 +114,11 @@
 				pt = _shape.points[i];
 				g.lineTo(pt.x, pt.y);
 			}
-			pt = _shape.points[0];
-			g.lineTo(pt.x, pt.y);
+			if (close) {
+				pt = _shape.points[0];
+				g.lineTo(pt.x, pt.y);				
+			}
+
 		}
 		
 		public function drawPathPortion(startT:Number, endT:Number):void {

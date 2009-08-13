@@ -10,9 +10,9 @@
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>C:\Dev\playground\Ripples\ripplestiltskin\src\Main.as</path-element>
+    <path-element>C:\Dev\playground\Ripples\ripplestiltskin\src\FreeformShape.as</path-element>
   </file-specs>
-  <default-background-color>#FFFFFF</default-background-color>
+  <default-background-color>#FDFAF7</default-background-color>
   <default-frame-rate>30</default-frame-rate>
   <default-size>
     <width>800</width>
